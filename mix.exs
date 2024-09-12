@@ -58,7 +58,18 @@ defmodule Circle.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+
+      # AWS S3
+      {:ex_aws, "~> 2.5"},
+      {:ex_aws_s3, "~> 2.5"},
+      {:poison, "~> 6.0"},
+      {:hackney, "~> 1.20"},
+      {:sweet_xml, "~> 0.7.4"},
+
+      # FLAME
+      {:flame, "~> 0.4.4"}
+
     ]
   end
 
