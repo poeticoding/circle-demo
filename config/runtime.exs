@@ -65,6 +65,26 @@ if config_env() == :prod do
     ],
     secret_key_base: secret_key_base
 
+  config :ex_aws,
+    debug_requests: true,
+    json_codec: Jason,
+    access_key_id: {:system, "AWS_ACCESS_KEY_ID"},
+    secret_access_key: {:system, "AWS_SECRET_ACCESS_KEY"}
+
+  config :ex_aws, :s3,
+    scheme: "https://",
+    host: System.get_env("AWS_ENDPOINT_URL_S3", "fly.storage.tigris.dev"),
+    region: System.get_env("AWS_REGION", "auto")
+
+  config :flame, :backend, FLAME.FlyBackend
+
+  config :flame, FLAME.FlyBackend,
+    token: System.fetch_env!("FLY_API_TOKEN"),
+    cpus: 16,
+    memory_mb: 4096 * 8
+
+  config :flame, :terminator, shutdown_timeout: :timer.seconds(10)
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key
