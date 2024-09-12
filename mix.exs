@@ -69,7 +69,6 @@ defmodule Circle.MixProject do
 
       # FLAME
       {:flame, "~> 0.4.4"}
-
     ]
   end
 

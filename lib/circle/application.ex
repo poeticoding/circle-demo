@@ -5,20 +5,33 @@ defmodule Circle.Application do
 
   use Application
 
+  @flame_timeout 10 * 60_000
+
   @impl true
   def start(_type, _args) do
-    children = [
-      CircleWeb.Telemetry,
-      Circle.Repo,
-      {DNSCluster, query: Application.get_env(:circle, :dns_cluster_query) || :ignore},
-      {Phoenix.PubSub, name: Circle.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: Circle.Finch},
-      # Start a worker by calling: Circle.Worker.start_link(arg)
-      # {Circle.Worker, arg},
-      # Start to serve requests, typically the last entry
-      CircleWeb.Endpoint
-    ]
+    flame_parent = FLAME.Parent.get()
+
+    children =
+      [
+        CircleWeb.Telemetry,
+        Circle.Repo,
+        {DNSCluster, query: Application.get_env(:circle, :dns_cluster_query) || :ignore},
+        {Phoenix.PubSub, name: Circle.PubSub},
+        # Start the Finch HTTP client for sending emails
+        {Finch, name: Circle.Finch},
+        {
+          FLAME.Pool,
+          # 10 mins timeout
+          name: Circle.FFMpegRunner,
+          min: 0,
+          max: 10,
+          max_concurrency: 2,
+          timeout: @flame_timeout,
+          idle_shutdown_after: 30_000
+        },
+        !flame_parent && CircleWeb.Endpoint
+      ]
+      |> Enum.filter(& &1)
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
