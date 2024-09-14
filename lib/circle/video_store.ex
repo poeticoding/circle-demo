@@ -1,13 +1,11 @@
 defmodule Circle.VideoStore do
   alias Circle.SimpleS3Upload
 
-  @bucket "circle-dev"
-
   @presigned_url_default_options [
     expires_in: 300
   ]
 
-  def bucket, do: @bucket
+  def bucket, do: System.fetch_env!("BUCKET_NAME")
 
   @doc """
   `:preview_image` videos' thumbnail
@@ -65,7 +63,7 @@ defmodule Circle.VideoStore do
     |> ExAws.S3.presigned_url(:get, bucket(), key(video, version), opts)
   end
 
-  @spec presigned_upload_form_url(Video.t, Phoenix.LiveView.UploadEntry.t(), integer()) :: map()
+  @spec presigned_upload_form_url(Video.t(), Phoenix.LiveView.UploadEntry.t(), integer()) :: map()
   def presigned_upload_form_url(video, entry, max_file_size) do
     bucket = bucket()
     key = key(video, :original)
@@ -84,10 +82,19 @@ defmodule Circle.VideoStore do
         expires_in: :timer.hours(1)
       )
 
+    default_upload_host = Enum.join([bucket, "fly.storage.tigris.dev"], ".")
+
+    url =
+      Application.get_env(:ex_aws, :s3)
+      |> Keyword.fetch!(:host)
+      |> URI.parse()
+      |> Map.update(:host, default_upload_host, &Enum.join([bucket, &1], "."))
+      |> URI.to_string()
+
     %{
       uploader: "Tigris",
       key: key,
-      url: "https://circle-dev.fly.storage.tigris.dev",
+      url: url,
       fields: fields
     }
   end
