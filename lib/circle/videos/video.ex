@@ -3,6 +3,8 @@ defmodule Circle.Videos.Video do
   import Ecto.Changeset
   import Ecto.Query
 
+  @type t :: %__MODULE__{}
+
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "videos" do
     field :title, :string
@@ -12,7 +14,6 @@ defmodule Circle.Videos.Video do
     field :original_size, :integer
     field :original_uploaded_at, :utc_datetime
 
-    field :processing_time, :integer
     field :web_uploaded_at, :utc_datetime
     field :preview_image_uploaded_at, :utc_datetime
 
@@ -29,7 +30,6 @@ defmodule Circle.Videos.Video do
       :original_extension,
       :original_size,
       :original_uploaded_at,
-      :processing_time,
       :web_uploaded_at,
       :preview_image_uploaded_at
     ])
