@@ -18,6 +18,12 @@ defmodule CircleWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/videos/new", VideoLive.Upload, :new
+
+    get "/videos/:id", VideoController, :show
+    get "/videos/:id/preview.jpg", VideoController, :preview_image
+    get "/videos/:id/download", VideoController, :download
   end
 
   # Other scopes may use custom stacks.
@@ -40,5 +46,9 @@ defmodule CircleWeb.Router do
       live_dashboard "/dashboard", metrics: CircleWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
+  end
+
+  defp auth(conn, _opts) do
+    Plug.BasicAuth.basic_auth(conn, Application.fetch_env!(:circle, :basic_auth))
   end
 end
