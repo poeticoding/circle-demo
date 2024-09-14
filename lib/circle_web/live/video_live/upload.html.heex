@@ -1,0 +1,75 @@
+<div id="new_video" class="flex flex-col items-center bg-gray-100 pt-8">
+  <.header class="mb-4 text-xl font-bold">
+    <%= (assigns[:video] && @video.title) || @page_title %>
+  </.header>
+
+  <form
+    id="upload-form"
+    phx-submit="save-upload"
+    phx-change="validate-upload"
+    class="w-full max-w-sm"
+  >
+    <div class="mb-4 flex justify-center">
+      <.live_file_input upload={@uploads.video} class="hidden" />
+      <div
+        :if={is_nil(assigns[:video])}
+        phx-drop-target={@uploads.video.ref}
+        class="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-100 transition duration-300"
+      >
+        <label for={@uploads.video.ref} class="text-center">
+          <p class="text-gray-600">Drag and drop your video here</p>
+          <p class="text-blue-500 font-semibold">or click to choose a file</p>
+        </label>
+      </div>
+    </div>
+
+    <%= if assigns[:preview_image] do %>
+      <div class="flex justify-center items-center w-full max-h-[480px] overflow-hidden animate-fade-in opacity-80">
+        <img src={@preview_image} alt="Video preview" class="object-contain max-h-[480px] w-auto" />
+      </div>
+    <% end %>
+
+    <div class="relative pt-1 px-4">
+      <%= for entry <- @uploads.video.entries do %>
+        <.progress_bar color="blue" label={entry.client_name} progress={entry.progress} />
+
+        <div class="flex justify-center space-x-4 pt-4 pb-4">
+          <input
+            :if={not entry.preflighted?}
+            type="submit"
+            value="Upload"
+            phx-disable-with="Uploading..."
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+          />
+
+          <button
+            :if={entry.preflighted?}
+            type="button"
+            phx-click="cancel-upload"
+            phx-value-ref={entry.ref}
+            class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition duration-300 ease-in-out"
+          >
+            Cancel
+          </button>
+        </div>
+      <% end %>
+      <div class="mb-10">
+        <.progress_bar
+          :if={not is_nil(@processing_progress)}
+          color="green"
+          label="processing"
+          progress={@processing_progress}
+        />
+        <%= if not is_nil(@processing_progress) do %>
+          <p class="mt-2 text-sm text-gray-600 italic text-center">
+            Please do not close this tab
+          </p>
+        <% end %>
+      </div>
+    </div>
+
+    <%= for err <- upload_errors(@uploads.video) do %>
+      <p class="mt-2 text-red-500 text-xs italic"><%= inspect(err) %></p>
+    <% end %>
+  </form>
+</div>
