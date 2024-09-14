@@ -1,5 +1,5 @@
 defmodule Circle.VideoStore do
-  alias Circle.Videos
+  alias Circle.SimpleS3Upload
 
   @bucket "circle-dev"
 
@@ -22,7 +22,7 @@ defmodule Circle.VideoStore do
     Path.join(["videos", video.id, "original#{video.original_extension}"])
   end
 
-  def object_key(video, :web) do
+  def key(video, :web) do
     Path.join(["videos", video.id, "web.mp4"])
   end
 
@@ -32,7 +32,7 @@ defmodule Circle.VideoStore do
   end
 
   def put_preview_image(video, data) do
-    put(object_key(video, :preview_image), data, content_type: "image/jpg")
+    put(key(video, :preview_image), data, content_type: "image/jpg")
   end
 
   def get(key) do
@@ -55,19 +55,40 @@ defmodule Circle.VideoStore do
     |> ExAws.S3.Upload.stream_file()
     |> ExAws.S3.upload(bucket(), key(video, version), content_type: "video/mp4")
     |> ExAws.request()
-    |> case do
-      {:ok, _} ->
-        Videos.update_video(video, %{web_uploaded_at: DateTime.utc_now()})
-
-      error ->
-        error
-    end
   end
 
-  def download_presigned_url(video, version \\ :original, opts \\ []) do
+  ## PRESIGNED URL
+  def presigned_download_url(video, version \\ :original, opts \\ []) do
     opts = Keyword.merge(@presigned_url_default_options, opts)
 
     ExAws.Config.new(:s3)
-    |> ExAws.S3.presigned_url(:get, bucket(), object_key(video, version), opts)
+    |> ExAws.S3.presigned_url(:get, bucket(), key(video, version), opts)
+  end
+
+  @spec presigned_upload_form_url(Video.t, Phoenix.LiveView.UploadEntry.t(), integer()) :: map()
+  def presigned_upload_form_url(video, entry, max_file_size) do
+    bucket = bucket()
+    key = key(video, :original)
+
+    config = %{
+      region: System.get_env("AWS_REGION", "auto"),
+      access_key_id: System.fetch_env!("AWS_ACCESS_KEY_ID"),
+      secret_access_key: System.fetch_env!("AWS_SECRET_ACCESS_KEY")
+    }
+
+    {:ok, fields} =
+      SimpleS3Upload.sign_form_upload(config, bucket,
+        key: key,
+        content_type: entry.client_type,
+        max_file_size: max_file_size,
+        expires_in: :timer.hours(1)
+      )
+
+    %{
+      uploader: "Tigris",
+      key: key,
+      url: "https://circle-dev.fly.storage.tigris.dev",
+      fields: fields
+    }
   end
 end
