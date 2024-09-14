@@ -14,12 +14,14 @@ defmodule CircleWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :protected do
+    plug :auth
+  end
+
   scope "/", CircleWeb do
     pipe_through :browser
 
     get "/", PageController, :home
-
-    live "/videos/new", VideoLive.Upload, :new
 
     get "/videos/:id", VideoController, :show
     get "/videos/:id/preview.jpg", VideoController, :preview_image
@@ -48,7 +50,15 @@ defmodule CircleWeb.Router do
     end
   end
 
+  # if user and password are defined, you get a basic auth to create a new video
   defp auth(conn, _opts) do
-    Plug.BasicAuth.basic_auth(conn, Application.fetch_env!(:circle, :basic_auth))
+    user = Application.fetch_env!(:circle, :basic_auth) |> Keyword.get(:username)
+    pass = Application.fetch_env!(:circle, :basic_auth) |> Keyword.get(:password)
+
+    if is_nil(user) or is_nil(pass) do
+      conn
+    else
+      Plug.BasicAuth.basic_auth(conn, Application.fetch_env!(:circle, :basic_auth))
+    end
   end
 end

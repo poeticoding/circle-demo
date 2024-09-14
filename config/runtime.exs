@@ -85,6 +85,10 @@ if config_env() == :prod do
 
   config :flame, :terminator, shutdown_timeout: :timer.seconds(10)
 
+  config :circle, :basic_auth,
+    username: System.get_env("AUTH_USERNAME"),
+    password: System.get_env("AUTH_PASSWORD")
+
   # ## SSL Support
   #
   # To get SSL working, you will need to add the `https` key

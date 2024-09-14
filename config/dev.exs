@@ -41,6 +41,10 @@ config :ex_aws, :s3,
   host: "fly.storage.tigris.dev",
   region: "auto"
 
+config :circle, :basic_auth,
+  username: System.get_env("AUTH_USERNAME"),
+  password: System.get_env("AUTH_PASSWORD")
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
