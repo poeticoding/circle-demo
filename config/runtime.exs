@@ -73,7 +73,7 @@ if config_env() == :prod do
 
   config :ex_aws, :s3,
     scheme: "https://",
-    host: System.get_env("AWS_ENDPOINT_URL_S3", "fly.storage.tigris.dev"),
+    host: "fly.storage.tigris.dev",
     region: System.get_env("AWS_REGION", "auto")
 
   config :flame, :backend, FLAME.FlyBackend

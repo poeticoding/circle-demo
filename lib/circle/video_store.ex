@@ -1,6 +1,8 @@
 defmodule Circle.VideoStore do
   alias Circle.SimpleS3Upload
 
+  @tigris_host "fly.storage.tigris.dev"
+
   @presigned_url_default_options [
     expires_in: 300
   ]
@@ -82,14 +84,13 @@ defmodule Circle.VideoStore do
         expires_in: :timer.hours(1)
       )
 
-    default_upload_host = Enum.join([bucket, "fly.storage.tigris.dev"], ".")
-
-    url =
+    host =
       Application.get_env(:ex_aws, :s3)
       |> Keyword.fetch!(:host)
       |> URI.parse()
-      |> Map.update(:host, default_upload_host, &Enum.join([bucket, &1], "."))
-      |> URI.to_string()
+      |> Map.get(:host, @tigris_host)
+
+    url = "https://#{bucket}.#{host}"
 
     %{
       uploader: "Tigris",
