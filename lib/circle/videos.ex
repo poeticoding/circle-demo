@@ -58,7 +58,7 @@ defmodule Circle.Videos do
     FLAME.place_child(
       Circle.FFMpegRunner,
       Task.child_spec(fn ->
-        pubsub_broadcast(video, {:postprocessing, video.id, :started})
+        pubsub_broadcast(video.id, {:postprocessing, video.id, :started})
 
         with {:ok, video} <- generate_preview_image(video),
              {:ok, video} <- resize(video, :web) do
@@ -68,7 +68,7 @@ defmodule Circle.Videos do
             Logger.error("FFMpegRunner resize error: #{inspect(error)}")
             error
         end
-        |> tap(fn _ -> pubsub_broadcast(video, {:postprocessing, video.id, :done}) end)
+        |> tap(fn _ -> pubsub_broadcast(video.id, {:postprocessing, video.id, :done}) end)
       end),
       timeout: @flame_timeout
     )
@@ -79,7 +79,7 @@ defmodule Circle.Videos do
       Path.join([System.tmp_dir!(), "#{Atom.to_string(version)}_#{video.id}.mp4"])
 
     with {:download_url, {:ok, url}} <-
-           {:download_url, VideoStore.download_presigned_url(video, :original)},
+           {:download_url, VideoStore.presigned_download_url(video, :original)},
          {:total_frames, {:ok, total_frames}} <- {:total_frames, FFMpeg.get_total_frames(url)},
          {:ffmpeg_resize, {_output, 0}} <-
            {:ffmpeg_resize,
@@ -99,7 +99,7 @@ defmodule Circle.Videos do
     local_preview_image_path = Path.join([System.tmp_dir!(), Ecto.UUID.generate() <> ".jpg"])
 
     with {:presigned_url, {:ok, original_url}} <-
-           {:presigned_url, VideoStore.download_presigned_url(video, :original)},
+           {:presigned_url, VideoStore.presigned_download_url(video, :original)},
          {:ffmpeg, {_, 0}} <-
            {:ffmpeg, FFMpeg.generate_preview_image(original_url, local_preview_image_path)},
          {:read_image, {:ok, image_data}} <- {:read_image, File.read(local_preview_image_path)},
@@ -108,7 +108,7 @@ defmodule Circle.Videos do
          {:update, {:ok, video}} <-
            {:update, update_video(video, %{preview_image_uploaded_at: DateTime.utc_now()})} do
       File.rm!(local_preview_image_path)
-      pubsub_broadcast(video, {:preview_image, video.id, :ready})
+      pubsub_broadcast(video.id, {:preview_image, video.id, :ready})
       {:ok, video}
     else
       error ->
