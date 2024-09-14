@@ -2,4 +2,18 @@
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
+@import "video.js/dist/video-js.css";
+
 /* This file is for your main application CSS */
+.drop-zone {
+    border: 2px dashed #ccc;
+    border-radius: 20px;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .drop-zone:hover {
+    background-color: #f8f8f8;
+  }
