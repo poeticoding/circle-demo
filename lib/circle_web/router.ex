@@ -19,6 +19,12 @@ defmodule CircleWeb.Router do
   end
 
   scope "/", CircleWeb do
+    pipe_through [:browser, :protected]
+
+    live "/videos/new", VideoLive.Upload, :new
+  end
+
+  scope "/", CircleWeb do
     pipe_through :browser
 
     get "/", PageController, :home
