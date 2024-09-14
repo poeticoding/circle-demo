@@ -1,27 +1,27 @@
 <div class="w-full">
-    <video id="video-player" class="video-js vjs-fluid" controls preload="auto" data-setup="{}">
-      <source src={~p"/videos/#{@video.id}/download"} type="video/mp4" />
-      <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a web browser that
-        <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-      </p>
-    </video>
-    <div class="mt-2 flex justify-between items-center">
-      <div class="flex items-center">
-        <button
-          class="mr-2 px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
-          onclick="navigator.clipboard.writeText(window.location.href)"
-        >
-          Copy Link
-        </button>
-        <h2 class="text-lg font-semibold"><%= @video.title %></h2>
-      </div>
-      <div class="text-sm text-gray-500">
-        <%= if @video.views_count do %>
-          <%= ngettext("1 view", "%{count} views", @video.views_count) %>
-        <% else %>
-          No views yet
-        <% end %>
-      </div>
+  <video id="video-player" class="video-js vjs-fluid" controls preload="auto" data-setup="{}">
+    <source src={~p"/videos/#{@video.id}/download"} type="video/mp4" />
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a web browser that
+      <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+    </p>
+  </video>
+  <div class="mt-2 flex justify-between items-center">
+    <div class="flex items-center">
+      <button
+        class="mr-2 px-2 py-1 text-xs bg-gray-200 hover:bg-gray-300 rounded"
+        onclick="navigator.clipboard.writeText(window.location.href)"
+      >
+        Copy Link
+      </button>
+      <h2 class="text-lg font-semibold"><%= @video.title %></h2>
+    </div>
+    <div class="text-sm text-gray-500">
+      <%= if @video.views_count do %>
+        <%= ngettext("1 view", "%{count} views", @video.views_count) %>
+      <% else %>
+        No views yet
+      <% end %>
     </div>
   </div>
+</div>

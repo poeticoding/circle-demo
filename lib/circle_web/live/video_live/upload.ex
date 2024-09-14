@@ -1,7 +1,6 @@
 defmodule CircleWeb.VideoLive.Upload do
   use CircleWeb, :live_view
 
-
   alias Circle.Videos
   alias Circle.Videos.Video
   alias Circle.VideoStore
@@ -116,7 +115,13 @@ defmodule CircleWeb.VideoLive.Upload do
 
     case Videos.create_video(entry.client_name, entry.client_size) do
       {:ok, video} ->
-        meta = VideoStore.presigned_upload_form_url(video, entry, uploads[entry.upload_config].max_file_size)
+        meta =
+          VideoStore.presigned_upload_form_url(
+            video,
+            entry,
+            uploads[entry.upload_config].max_file_size
+          )
+
         # subscribing to get upload progress
         Videos.pubsub_subscribe(video.id)
 
