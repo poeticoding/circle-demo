@@ -33,4 +33,39 @@ defmodule CircleWeb.UploadComponents do
     </div>
     """
   end
+
+  attr :video_id, :string
+  attr :title, :string
+  def video_meta(assigns) do
+    ~H"""
+    <meta property="og:title" content={@title} />
+
+    <!-- A brief description of your video content -->
+    <meta property="og:description" content={@title} />
+
+    <!-- The URL of your content -->
+    <meta property="og:url" content={"https//circle.poeticoding.com/videos/#{@video_id}"} />
+
+    <!-- The type of content; for videos, use 'video.other' -->
+    <meta property="og:type" content="video.other" />
+
+    <!-- The URL of the video file or video landing page -->
+    <meta property="og:video" content={"https//circle.poeticoding.com/videos/#{@video_id}"} />
+
+    <!-- The URL of the preview image (thumbnail) for your video -->
+    <meta property="og:image" content={"https//circle.poeticoding.com/videos/#{@video_id}/preview.jpg"} />
+
+    <!-- The width and height of the video, optional but recommended -->
+    <meta property="og:video:width" content="1280" />
+    <meta property="og:video:height" content="720" />
+
+    <!-- The MIME type of the video -->
+    <meta property="og:video:type" content="video/mp4" />
+
+    <!-- If your video is hosted on YouTube or Vimeo, you may also want to include the following -->
+    <meta property="og:video:url" content={"https://circle.poeticoding.com/videos/#{@video_id}/preview.jpg"} />
+
+    """
+  end
+
 end
