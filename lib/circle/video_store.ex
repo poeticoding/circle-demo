@@ -84,12 +84,7 @@ defmodule Circle.VideoStore do
         expires_in: :timer.hours(1)
       )
 
-    host =
-      Application.get_env(:ex_aws, :s3)
-      |> Keyword.fetch!(:host)
-      |> URI.parse()
-      |> Map.get(:host, @tigris_host)
-
+    host = Application.get_env(:ex_aws, :s3) |> Keyword.fetch!(:host)
     url = "https://#{bucket}.#{host}"
 
     %{
