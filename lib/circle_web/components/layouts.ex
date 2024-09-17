@@ -9,6 +9,7 @@ defmodule CircleWeb.Layouts do
   `use CircleWeb, :live_view`.
   """
   use CircleWeb, :html
+  import CircleWeb.UploadComponents
 
   embed_templates "layouts/*"
 end

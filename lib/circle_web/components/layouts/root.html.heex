@@ -9,9 +9,9 @@
     </.live_title>
 
     <%= if not is_nil(assigns[:video]) do %>
-      <.video_meta title={@video.title} video_id={@video.id}/>
+      <.video_meta title={@video.title} video_id={@video.id} />
     <% end %>
-    
+
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
