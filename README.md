@@ -1,7 +1,10 @@
 # Circle 
+![](guides/images/uploaded_video.jpg)
 
-**[Effortless Video Sharing with Phoenix LiveView and FLAME]()**
+Related Article: **[Effortless Video Sharing with Phoenix LiveView and FLAME](https://www.poeticoding.com/effortless-video-sharing-with-phoenix-liveview-and-flame/)**
 
+
+> Transparency Notice: The article is sponsored by [Tigris](https://www.tigrisdata.com). They've provided resources and compensation, enabling me to explore and share this solution. Tigris is featured for its excellent fit in this use case, chosen based on its merits. I'm really glad for their support in creating content about innovative technologies. I encourage readers to explore all services mentioned to find the best fit for their projects.
 
 ## Running it yourself
 
