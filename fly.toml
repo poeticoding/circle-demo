@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for circlevideos-dev on 2024-09-14T19:15:06+02:00
+# fly.toml app configuration file generated for circlevideos-prod on 2024-09-17T01:32:38+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'circlevideos-dev'
+app = 'circlevideos-prod'
 primary_region = 'ams'
 kill_signal = 'SIGTERM'
 
@@ -14,7 +14,7 @@ kill_signal = 'SIGTERM'
 
 [env]
   AWS_ENDPOINT_URL_S3 = 'fly.storage.tigris.dev'
-  PHX_HOST = 'circlevideos-dev.fly.dev'
+  PHX_HOST = 'circle.poeticoding.com'
   PORT = '8080'
 
 [http_service]
